@@ -18,25 +18,38 @@ const { Schema } = mongoose;
 // * Longitude - Number
 // * Created At - DateTime
 // * Updated At - DateTime
-const requiredString = {
-  type: String,
+const requiredNumber = {
+  type: Number,
   required: true,
 };
-const logEntrySchema = new Schema({
-  title: requiredString,
-  description: String,
-  comments: String,
-  rating: {
+
+const logEntrySchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: String,
+    comments: String,
+    image: String,
+    rating: {
       type: Number,
-      min: [0, "Two few eggs"],
-      max: [10, ""]
-  } 
-  body: String,
-  comments: [{ body: String, date: Date }],
-  date: { type: Date, default: Date.now },
-  hidden: Boolean,
-  meta: {
-    votes: Number,
-    favs: Number,
+      min: 0,
+      max: 10,
+      default: 0,
+    },
+    latitude: { ...requiredNumber, min: -90, max: 90 },
+    longitude: { ...requiredNumber, min: -180, max: 180 },
+    visitDate: {
+      required: true,
+      type: Date,
+    },
   },
-});
+  {
+    timestamps: true,
+  }
+);
+
+const LogEntry = mongoose.model("LogEntry", logEntrySchema);
+
+module.exports = LogEntry;
